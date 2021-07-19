@@ -1,0 +1,36 @@
+
+@mixin flex{
+    display: flex;
+}
+
+@mixin flex-center{
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin no-dots{
+    list-style: none;
+    padding: 0;
+}
+
+@mixin no-text-decoration{
+    text-decoration: none;
+    
+}
+
+@mixin Padding-Sides{
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@mixin tablet{
+    @media screen and (min-width: 768px){
+        @content;
+    }
+}
+
+@mixin desktop{
+    @media screen and (min-width: 1280px){
+        @content;
+    }
+}

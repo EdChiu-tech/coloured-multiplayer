@@ -1,0 +1,10 @@
+@use "./colors" as *;
+@use "./mixins" as *;
+
+
+$API_URL: "http://localhost:8080";
+
+$No-Margin: 0;
+
+$divider: 1px solid $mercury;
+
