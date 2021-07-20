@@ -1,6 +1,8 @@
 import React from 'react'
 
+
 function Timer({gameState}) {
+    console.log(gameState.countdown)
 
     return (
         <div>
@@ -10,3 +12,4 @@ function Timer({gameState}) {
 }
 
 export default Timer
+

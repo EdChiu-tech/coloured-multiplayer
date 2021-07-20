@@ -26,11 +26,15 @@ const GameBoard = ({ gameState, socket }) => {
                         return <div 
                         key={colIndex} className="cell--inactive"></div>
                     }
+                    // referring to the player within the cell
                     const { x, y, avatar } = players[playerIndex]
                     if (y === rowIndex && x === colIndex) {
+                    // current position of player
                         return <div
                         key={colIndex}  className="cell--online-player" style={{ 'backgroundColor': color }}>{avatar}</div>
-                    } else {
+                    } 
+                    // cells that the player has "converted"
+                    else {
                         return <div
                         key={colIndex} 
                         className="cell--online-player" style={{ 'backgroundColor': color }}></div>
@@ -50,7 +54,7 @@ const GameBoard = ({ gameState, socket }) => {
     useEffect(() => {
         if (!gameState.matrix) return
         setRenderedBoard(renderServerBoard(gameState))
-    }, [gameState]) // Maybe
+    }, [gameState])
 
 
     return (

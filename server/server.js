@@ -3,8 +3,7 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const cors = require('cors')
-
-const deepClone = obj => JSON.parse(JSON.stringify(obj))
+const { cloneDeep, isEmpty } = require("lodash");
 
 require("dotenv").config();
 const port = process.env.PORT ||8080;
@@ -16,26 +15,11 @@ const io = new Server(server, {
     }
 });
 
-
 app.use(cors({ origin: '*' }))
 app.use(express.static("public"))
 
-// app.get('/', (req, res) => {
-//   res.sendFile(__dirname + '/index.html');
-// });
-
-// initialBoard: Array(GameBoardSize).fill().map(() => Array(GameBoardSize).fill(null)),
-
 const GameBoardSize = 10;
 
-/**
- *  id: null,
-        color: '#332c50',
-        x: GameBoardSize-1,
-        y: 0,
-        joined: false,
-        tileCount: 0
- */
 const PLAYER_CONSTANTS = [
     {
         avatar: '🐶',
@@ -64,7 +48,7 @@ const PLAYER_CONSTANTS = [
 ]
 
 const INITIAL_GAME_STATE = {
-    countdown: 5,
+    countdown: 10,
     players: PLAYER_CONSTANTS.map((constants, index) => {
         return {
             ...constants,
@@ -78,45 +62,28 @@ const INITIAL_GAME_STATE = {
     matrix: Array(GameBoardSize).fill().map(() => Array(GameBoardSize).fill({}))
 }
 
-let gameState = deepClone(INITIAL_GAME_STATE)
-
-// class GameState {
-//     constructor() {
-//         this._players = []
-//         this._matrix = [[]]
-//     }
-
-//     haveAllPlayersJoin() {
-//         return this._players.every(player => player.joined === true)
-//     }
-
-//     addPlayer(socketId) {
-//         console.log('Set player', socketId, 's joined status to true\n\n')
-//         const index = this._players.findIndex(player => player.joined === false)
-//         if (index >= 0) { // if there is still free slot
-//             this._players[index].joined = true
-//             this._players[index].id = socketId
-
-//             this.updateMatrix(this._players[index])
-//         }
-//     }
-// }
+// clone of the initial game state to not modify original
+let gameState = cloneDeep(INITIAL_GAME_STATE)
 
 io.on('connection', (socket) => {
     console.log('A new user has connected:', socket.id);
 
-    /* PLAYER JOINING CODE */
+    // PLAYER JOINING CODE 
     setPlayerJoined(socket.id)
+
+    // once all player slots are filled, game is ready 
     if (gameState.players.every(player => player.joined === true)) {
         io.emit("game_ready", true)
     }
 
     socket.on('ready_up', () => {
+        // finds player that click the ready button and sets their ready status to true, will run each button press
         const playerThatsReady = gameState.players.find(player => player.id === socket.id) 
         console.log('Player', playerThatsReady.id, 'is ready')
         playerThatsReady.ready = true
 
         // SHOULD ONLY RUN ONCE
+        console.log(gameState.countdown)
         if(gameState.players.every(player => player.ready)) {
             io.emit('start_game', true)
 
@@ -134,10 +101,8 @@ io.on('connection', (socket) => {
 
     socket.on('move', msg => {
         console.log('Received move message from:', socket.id, msg)
-        // arguably slow if you had 10000 players
-        const playerThatMoved = gameState.players.find(player => player.id === socket.id) // ugly code
+        const playerThatMoved = gameState.players.find(player => player.id === socket.id) 
         if (!playerThatMoved) return // if spectator, ignore
-
         if (msg === "ArrowUp") {
             if (playerThatMoved.y > 0) playerThatMoved.y--
         } else if (msg === "ArrowDown") {
@@ -153,11 +118,10 @@ io.on('connection', (socket) => {
     })
 
     function updateMatrix(playerThatMoved) {
-        const { x, y, color, index } = playerThatMoved
-        
-        const cell = gameState.matrix[y][x] // default value is {}
-
-        if (cell.playerIndex === undefined) {
+        const { x, y, color, index } = playerThatMoved 
+        const cell = gameState.matrix[y][x] // default value is {}, y and x for playThatMoved
+ 
+        if (isEmpty(cell)) {
             // if no one has walked over it
             gameState.players[index].tileCount++
         } else if (cell.playerIndex !== index) {
@@ -172,7 +136,7 @@ io.on('connection', (socket) => {
 
     function setPlayerLeft(socketId) {
         const index = gameState.players.findIndex(player => player.id === socketId)
-        if (index >= 0) { // if there is still free slot
+        if (index >= 0) { 
             gameState.players[index].joined = false
             gameState.players[index].id = null
             console.log('Player has left', socketId)
@@ -183,6 +147,7 @@ io.on('connection', (socket) => {
 
     function setPlayerJoined(socketId) {
         console.log('Set player', socketId, 's joined status to true\n\n')
+        //find empty player slot and occupy slot
         const index = gameState.players.findIndex(player => player.joined === false)
         if (index >= 0) { // if there is still free slot
             gameState.players[index].joined = true
@@ -197,12 +162,11 @@ io.on('connection', (socket) => {
 
         const joinedPlayer = gameState.players.find(player => player.joined === true) 
         if (joinedPlayer === undefined) {
-            gameState = deepClone(INITIAL_GAME_STATE)
+            gameState = cloneDeep(INITIAL_GAME_STATE)
         }
-        // console.log('Player has left, we should see joined: false', JSON.stringify(gameState.players, null, 2))
     })
 });
 
-server.listen(8080, () => {
+server.listen(port, () => {
     console.log(`server is running on :${port}`);
 });

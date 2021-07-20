@@ -1,4 +1,5 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { io } from "socket.io-client";
 import Game from "./components/Game/Game"
 import Start from "./pages/Start/Start"
 import BGVideo from "./components/BGVideo/BGVideo"
