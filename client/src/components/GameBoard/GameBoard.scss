@@ -1,7 +1,9 @@
-.gameBoard{
-    text-align: center;
-    border: 3px solid rgb(119, 218, 231);
+@use "../../partials/mixins" as *;
 
+
+.gameBoard{
+    width: 100%;
+    height: auto;
 }
 
 .row{
@@ -9,11 +11,8 @@
 }
 
 .cell--online-player{
-    position: relative;
     width: 25px;
     height: 25px;
-    // transform: translateY(-30%);
-    // outline: 1px solid black;
     display: inline-block;
 }
 

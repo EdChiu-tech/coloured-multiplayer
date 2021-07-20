@@ -1,34 +1,19 @@
 @use "./partials/typography" as *;
+@use "./partials/mixins" as *;
 
 *{
   font-family: PSP2;
 }
 
 .App {
-  text-align: center;
-  // background-image: url("./assets/images/Scattered-Forcefields.svg");
-  // width: 100%;
-  // height: 100%;
-  // font-family:Press+Start+2P;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
+  @include flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  margin: auto 0;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  text-align: center;
 }
 
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

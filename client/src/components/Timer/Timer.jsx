@@ -1,13 +1,13 @@
 import React from 'react'
+import "./Timer.scss"
 
 
 function Timer({gameState}) {
-    console.log(gameState.countdown)
 
     return (
-        <div>
-            <p style={{ fontSize: 50, textAlign: 'center' }}>⏳ {gameState.countdown || 'GAME OVER'}</p>
-        </div>
+        <>
+            <p className="timer__text">⏳ {gameState.countdown || 'GAME OVER'}</p>
+        </>
     )
 }
 

@@ -18,7 +18,7 @@ const io = new Server(server, {
 app.use(cors({ origin: '*' }))
 app.use(express.static("public"))
 
-const GameBoardSize = 10;
+const GameBoardSize = 20;
 
 const PLAYER_CONSTANTS = [
     {
@@ -48,7 +48,7 @@ const PLAYER_CONSTANTS = [
 ]
 
 const INITIAL_GAME_STATE = {
-    countdown: 10,
+    countdown: 5,
     players: PLAYER_CONSTANTS.map((constants, index) => {
         return {
             ...constants,
@@ -120,8 +120,8 @@ io.on('connection', (socket) => {
     function updateMatrix(playerThatMoved) {
         const { x, y, color, index } = playerThatMoved 
         const cell = gameState.matrix[y][x] // default value is {}, y and x for playThatMoved
- 
-        if (isEmpty(cell)) {
+
+        if (isEmpty(cell)) { //checks if cell is empty object, if so, returns true
             // if no one has walked over it
             gameState.players[index].tileCount++
         } else if (cell.playerIndex !== index) {

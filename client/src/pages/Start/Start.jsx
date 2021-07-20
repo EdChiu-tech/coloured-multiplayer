@@ -27,7 +27,7 @@ function Start({socket}) {
                     <>
                         <p>Ready to play</p>
                         <form className="start__form">
-                            <button className="start__join" type="click"
+                            <button className="nes-btn is-primary" type="click"
                             onClick={onClickReady}>Ready Up</button>
                         </form>
                     </>

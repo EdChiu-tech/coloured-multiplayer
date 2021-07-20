@@ -1,0 +1,10 @@
+@use "../../partials/mixins" as *;
+@use "../../partials/variables" as *;
+
+.timer__text{
+    @include flex;
+    @include flex-center;
+    margin: 0;
+    font-size: 50px; 
+    text-align: center;
+}
