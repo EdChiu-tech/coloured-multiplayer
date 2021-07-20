@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, HashRouter } from "react-router-dom";
 import { io } from "socket.io-client";
 import Game from "./components/Game/Game"
 import Start from "./pages/Start/Start"
@@ -39,7 +39,7 @@ function App() {
 
   return (
     <div className="App">
-      <BrowserRouter>
+      <HashRouter>
           <BGVideo />
           { showModal ? <Winner onShow={show => {setShowModal(show)}} socket={socket}> {`The Winner is:${winningPlayer.avatar}`}</Winner > : null }
         <Switch>
@@ -50,7 +50,7 @@ function App() {
             render={() => <Game socket={socket} />}
           />
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }

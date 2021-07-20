@@ -1,19 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState} from 'react'
 import "./GameBoard.scss"
 
 
 const GameBoard = ({ gameState, socket }) => {
     
-    // const [active, setActive] = useState("true")
-    // const GameBoardSize = 10;
-    // Declare initial state of board
-    // const initialBoard = Array(GameBoardSize).fill().map(() => Array(GameBoardSize).fill(null))
-
-    // Rendered board is the <div> html representation of gameBoard
-    // const gameBoard = useRef(initialBoard)
-
-    // State variables
-    // const [gameLoaded, setGameLoaded] = useState(false);
     const [renderedBoard, setRenderedBoard] = useState(null);
 
     const renderServerBoard = ({ matrix, players }) => { // matrix is [[{ color }, {color}, ...], ....]

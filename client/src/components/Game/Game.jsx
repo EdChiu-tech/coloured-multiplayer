@@ -12,9 +12,7 @@ function Game({ socket }) {
 
     useEffect(() => {
         socket.on('sync_game_state', serverSideGameState => {
-            // if (serverSideGameState.countdown === 0) {
-            //     showWinnerModal(serverSideGameState.players)
-            // }
+
             setGameState(serverSideGameState)
         })            
     },[])
