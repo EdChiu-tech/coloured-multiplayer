@@ -20,7 +20,7 @@ function Game({ socket }) {
     },[])
 
     const tileCounts = (gameState.players || []).map((player, index) => {
-        return `Player ${index+1}: ${player.tileCount}`
+        return `Player ${player.avatar}: ${player.tileCount}`
     }).join(', ')
 
     return (

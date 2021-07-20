@@ -24,13 +24,13 @@ function Start({socket}) {
             <h1>Coloured</h1>
             {isGameReady 
                 ? (
-                    <>
+                    <div>
                         <p>Ready to play</p>
                         <form className="start__form">
                             <button className="nes-btn is-primary" type="click"
                             onClick={onClickReady}>Ready Up</button>
                         </form>
-                    </>
+                    </div>
                 )
                 : <p>Waiting for other players...</p>
                 }

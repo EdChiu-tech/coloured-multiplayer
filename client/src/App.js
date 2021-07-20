@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter, Switch, Route, useHistory } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { io } from "socket.io-client";
 import Game from "./components/Game/Game"
 import Start from "./pages/Start/Start"

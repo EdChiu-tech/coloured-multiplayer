@@ -7,10 +7,10 @@ function Winner({children, socket, onShow}) {
     const history = useHistory();
 
 
-    const goBack = () => {
+    const goBack = async () => {
         history.replace("/");
         onShow(false);
-        socket.disconnect();
+        await socket.disconnect();
         socket.connect();
     };
 

@@ -121,7 +121,7 @@ io.on('connection', (socket) => {
         const { x, y, color, index } = playerThatMoved 
         const cell = gameState.matrix[y][x] // default value is {}, y and x for playThatMoved
 
-        if (isEmpty(cell)) { //checks if cell is empty object, if so, returns true
+        if (cell.playerIndex === undefined) { //checks if cell is empty object, if so, returns true
             // if no one has walked over it
             gameState.players[index].tileCount++
         } else if (cell.playerIndex !== index) {
@@ -134,6 +134,17 @@ io.on('connection', (socket) => {
         gameState.matrix[y][x] = { playerIndex: index, color }
     }
 
+    function setPlayerJoined(socketId) {
+        console.log('Set player', socketId, 's joined status to true\n\n')
+        //find empty player slot and occupy slot
+        const index = gameState.players.findIndex(player => player.joined === false)
+        if (index >= 0) { // if there is still free slot
+            gameState.players[index].joined = true
+            gameState.players[index].id = socketId
+            updateMatrix(gameState.players[index])
+        }
+    }
+    
     function setPlayerLeft(socketId) {
         const index = gameState.players.findIndex(player => player.id === socketId)
         if (index >= 0) { 
@@ -145,21 +156,9 @@ io.on('connection', (socket) => {
         }
     }
 
-    function setPlayerJoined(socketId) {
-        console.log('Set player', socketId, 's joined status to true\n\n')
-        //find empty player slot and occupy slot
-        const index = gameState.players.findIndex(player => player.joined === false)
-        if (index >= 0) { // if there is still free slot
-            gameState.players[index].joined = true
-            gameState.players[index].id = socketId
-
-            updateMatrix(gameState.players[index])
-        }
-    }
 
     socket.on('disconnect', () => {
         setPlayerLeft(socket.id)
-
         const joinedPlayer = gameState.players.find(player => player.joined === true) 
         if (joinedPlayer === undefined) {
             gameState = cloneDeep(INITIAL_GAME_STATE)
