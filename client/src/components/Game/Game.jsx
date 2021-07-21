@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import GameBoard from "../GameBoard/GameBoard"
 import Timer from "../Timer/Timer"
+import "./Game.scss"
 
 function Game({ socket }) {
     const [gameState, setGameState] = useState({})
@@ -18,7 +19,7 @@ function Game({ socket }) {
             <Timer gameState={gameState} socket={socket} />
             <GameBoard gameState={gameState} socket={socket} />
             {gameState.players ? (
-                <div>
+                <div className="score">
                     <p>{`${gameState.players[0].avatar}${gameState.players[0].tileCount}`}</p>
                     <p>{`${gameState.players[1].avatar}${gameState.players[1].tileCount}`}</p>
                     <p>{`${gameState.players[2].avatar}${gameState.players[2].tileCount}`}</p>
