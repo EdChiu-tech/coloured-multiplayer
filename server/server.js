@@ -122,7 +122,11 @@ io.on('connection', (socket) => {
         // finds player that click the ready button and sets their ready status to true, will run each button press
         const playerThatsReady = gameState.players.find(player => player.id === socket.id)
         console.log('Player', playerThatsReady.id, 'is ready')
+        if(playerThatsReady === undefined){
+            console.log("spectators cannot press ready")
+        }else{
         playerThatsReady.ready = true
+        }
 
         // SHOULD ONLY RUN ONCE
         console.log(gameState.countdown)
