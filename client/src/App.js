@@ -8,7 +8,7 @@ import Winner from "./pages/Winner/Winner"
 import './App.scss';
 
 // const socket = io('ws://localhost:8080')
-const socket = io('ws://morning-beach-77565.herokuapp.com/')
+const socket = io('wss://morning-beach-77565.herokuapp.com/')
 
 
 function App() {
