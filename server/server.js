@@ -53,7 +53,7 @@ const PLAYER_CONSTANTS = [
 ]
 
 const INITIAL_GAME_STATE = {
-    countdown: 5,
+    countdown: 15,
     players: PLAYER_CONSTANTS.map((constants, index) => {
         return {
             ...constants,
@@ -171,7 +171,6 @@ io.on('connection', (socket) => {
         }
     })
 });
-
 
 server.listen(port, () => {
     console.log(`server is running on :${port}`);

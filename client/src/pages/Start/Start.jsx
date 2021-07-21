@@ -20,8 +20,8 @@ function Start({socket}) {
     })
 
     return (
-        <div className="start">
-            <h1>Coloured</h1>
+        <div className="nes-container with-title is-centered is-dark is-rounded start">
+            <h1 className="title start__title">Coloured</h1>
             {isGameReady 
                 ? (
                     <div>

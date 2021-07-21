@@ -17,8 +17,8 @@
         align-items: center;
         justify-content: space-evenly;
         background-color: rgba(0,0,0,0.6);
-        width: 40%;
-        height: 40%;
+        min-width: 30vh;
+        min-height: 40vh;
         border-radius: 10px;
     }
 

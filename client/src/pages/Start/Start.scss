@@ -4,16 +4,15 @@
 
 .start{
     @include flex;
-    @include flex-center;
+    position: relative;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: 100vh;
-
-    &__form{
-        @include flex;
-        flex-direction: column;
-    }
-
+    min-height: 30vh;
+    min-width: 50vw;
     
+    &__title{
+        font-size: 3rem;
+    }
 }
