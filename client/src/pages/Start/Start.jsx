@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from "react-router-dom"
 import "./Start.scss"
 
 function Start({socket}) {
     let history = useHistory();
     const [isGameReady, setGameReady] = useState(false)
+    // const [gameIsFullAlert, setGameIsFullAlert] = useState (false)
 
     const onClickReady = (e) => {
         e.preventDefault()
-        socket.emit('ready_up', true)
+            socket.emit('ready_up', true)
     }
 
+    
     socket.on('connected', () => console.log('CONNECTED!'))
     socket.on('game_ready', () => setGameReady(true))
 
@@ -18,6 +20,12 @@ function Start({socket}) {
         // show game
         history.push('/game')
     })
+
+
+    useEffect(() => {
+        socket.on('room_is_full_alert', () => alert("Game is full! Joining as spectator!"), console.log("room full"))
+    }, [])
+
 
     return (
         <div className="nes-container with-title is-centered is-dark is-rounded start">

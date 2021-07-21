@@ -106,7 +106,7 @@ function setPlayerLeft(socketId) {
     }
 }
 
-
+io.disconnectSockets();
 io.on('connection', (socket) => {
     console.log('A new user has connected:', socket.id);
 
@@ -123,14 +123,15 @@ io.on('connection', (socket) => {
         const playerThatsReady = gameState.players.find(player => player.id === socket.id)
         if(playerThatsReady === undefined){
             console.log("spectators cannot press ready")
-        }else{
+            socket.emit('room_is_full_alert', true )
+        }else {
         console.log('Player', playerThatsReady.id, 'is ready')
         playerThatsReady.ready = true
         }
 
         // SHOULD ONLY RUN ONCE
         console.log(gameState.countdown)
-        if (gameState.players.every(player => player.ready)) {
+        if(gameState.players.every(player => player.ready)) {
             io.emit('start_game', true)
 
             // Begin countdown
