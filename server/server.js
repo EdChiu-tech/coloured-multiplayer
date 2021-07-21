@@ -9,10 +9,6 @@ require("dotenv").config();
 
 const port = process.env.PORT || 8080;
 
-// const { Server } = require("socket.io");
-// const io = new Server(server);
-
-
 const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
@@ -38,18 +34,18 @@ const PLAYER_CONSTANTS = [
         x: GameBoardSize - 1,
         y: 0
     },
-    // {
-    //     avatar: '🏎',
-    //     color: '#e2f3e4',
-    //     x: GameBoardSize-1,
-    //     y: GameBoardSize-1
-    // },
-    // {
-    //     avatar: '🍜',
-    //     color: '#94e344',
-    //     x: 0,
-    //     y: GameBoardSize-1
-    // }
+    {
+        avatar: '🏎',
+        color: '#e2f3e4',
+        x: GameBoardSize-1,
+        y: GameBoardSize-1
+    },
+    {
+        avatar: '🍜',
+        color: '#94e344',
+        x: 0,
+        y: GameBoardSize-1
+    }
 ]
 
 const INITIAL_GAME_STATE = {
