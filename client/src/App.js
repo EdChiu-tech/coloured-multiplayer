@@ -7,7 +7,7 @@ import BGVideo from "./components/BGVideo/BGVideo"
 import Winner from "./pages/Winner/Winner"
 import './App.scss';
 
-const socket = io('ws://localhost:8080')
+const socket = io('https://morning-beach-77565.herokuapp.com/:8080')
 
 
 function App() {

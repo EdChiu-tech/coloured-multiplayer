@@ -11,7 +11,7 @@ const port = process.env.PORT ||8080;
 const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://morning-beach-77565.herokuapp.com/:3000",
     }
 });
 
