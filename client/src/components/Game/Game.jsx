@@ -21,8 +21,8 @@ function Game({ socket }) {
                 <div>
                     <p>{`${gameState.players[0].avatar}${gameState.players[0].tileCount}`}</p>
                     <p>{`${gameState.players[1].avatar}${gameState.players[1].tileCount}`}</p>
-                    <p>{`${gameState.players[2].avatar}${gameState.players[2].tileCount}`}</p>
-                    <p>{`${gameState.players[3].avatar}${gameState.players[3].tileCount}`}</p>
+                    {/* <p>{`${gameState.players[2].avatar}${gameState.players[2].tileCount}`}</p>
+                    <p>{`${gameState.players[3].avatar}${gameState.players[3].tileCount}`}</p> */}
                 </div>
             ) : null}
         </>

@@ -34,18 +34,18 @@ const PLAYER_CONSTANTS = [
         x: GameBoardSize - 1,
         y: 0
     },
-    {
-        avatar: '🏎',
-        color: '#e2f3e4',
-        x: GameBoardSize-1,
-        y: GameBoardSize-1
-    },
-    {
-        avatar: '🍜',
-        color: '#94e344',
-        x: 0,
-        y: GameBoardSize-1
-    }
+    // {
+    //     avatar: '🏎',
+    //     color: '#e2f3e4',
+    //     x: GameBoardSize-1,
+    //     y: GameBoardSize-1
+    // },
+    // {
+    //     avatar: '🍜',
+    //     color: '#94e344',
+    //     x: 0,
+    //     y: GameBoardSize-1
+    // }
 ]
 
 const INITIAL_GAME_STATE = {
@@ -95,6 +95,7 @@ function setPlayerJoined(socketId) {
 }
 
 function setPlayerLeft(socketId) {
+    // find index of player that has an id in slot
     const index = gameState.players.findIndex(player => player.id === socketId)
     if (index >= 0) {
         gameState.players[index].joined = false
