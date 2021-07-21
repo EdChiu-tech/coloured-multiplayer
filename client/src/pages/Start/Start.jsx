@@ -38,7 +38,7 @@ function Start({socket}) {
                         <p>Ready to play</p>
                         <form className="start__form">
                             <button className="nes-btn is-primary"
-                            disabled={disableReadyButton? true: false}
+                            // disabled={disableReadyButton? true: false}
                             type="click"
                             onClick={onClickReady}
                             >Ready Up</button>
