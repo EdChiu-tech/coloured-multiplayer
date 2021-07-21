@@ -5,6 +5,7 @@ import "./Start.scss"
 function Start({socket}) {
     let history = useHistory();
     const [isGameReady, setGameReady] = useState(false)
+    const [disableReadyButton, setDisableReadyButton] = useState(false)
     // const [gameIsFullAlert, setGameIsFullAlert] = useState (false)
 
     const onClickReady = (e) => {
@@ -19,6 +20,7 @@ function Start({socket}) {
     socket.on('start_game', () => {
         // show game
         history.push('/game')
+        setDisableReadyButton(true)
     })
 
 
@@ -35,8 +37,11 @@ function Start({socket}) {
                     <div>
                         <p>Ready to play</p>
                         <form className="start__form">
-                            <button className="nes-btn is-primary" type="click"
-                            onClick={onClickReady}>Ready Up</button>
+                            <button className="nes-btn is-primary"
+                            disabled={disableReadyButton? true: false}
+                            type="click"
+                            onClick={onClickReady}
+                            >Ready Up</button>
                         </form>
                     </div>
                 )
