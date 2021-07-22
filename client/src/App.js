@@ -7,13 +7,14 @@ import BGVideo from "./components/BGVideo/BGVideo"
 import Winner from "./pages/Winner/Winner"
 import './App.scss';
 
-// const socket = io('ws://localhost:8080')
-const socket = io('wss://morning-beach-77565.herokuapp.com/')
+const socket = io('ws://localhost:8080')
+// const socket = io('wss://morning-beach-77565.herokuapp.com/')
 
 
 function App() {
   const [showModal, setShowModal] = useState(false)
   const [winningPlayer, setWinningPlayer] = useState(null)
+  const [gameState, setGameState] = useState({})
 
 
   const showWinnerModal = (players) => {
@@ -35,7 +36,10 @@ function App() {
         if (serverSideGameState.countdown === 0) {
             showWinnerModal(serverSideGameState.players)
         }
-    })            
+    })
+    socket.on('sync_game_state', serverSideGameState => {
+      setGameState(serverSideGameState)
+    })         
 },[])
 
   return (
@@ -45,10 +49,18 @@ function App() {
           { showModal ? <Winner onShow={show => {setShowModal(show)}} socket={socket}> {`The Winner is:${winningPlayer.avatar}`}</Winner > : null }
         <Switch>
           <Route exact path="/"
-            render={() => <Start socket={socket} />}
+            render={() => 
+              <Start 
+                socket={socket}
+                gameState={gameState}
+              />}
           />
           <Route exact path="/game"
-            render={() => <Game socket={socket} />}
+            render={() => 
+            <Game 
+              socket={socket}
+              gameState={gameState}
+            />}
           />
         </Switch>
       </HashRouter>

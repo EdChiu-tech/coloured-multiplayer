@@ -34,22 +34,22 @@ const PLAYER_CONSTANTS = [
         x: GameBoardSize - 1,
         y: 0
     },
-    {
-        avatar: '🏎',
-        color: '#e2f3e4',
-        x: GameBoardSize-1,
-        y: GameBoardSize-1
-    },
-    {
-        avatar: '🍜',
-        color: '#94e344',
-        x: 0,
-        y: GameBoardSize-1
-    }
+    // {
+    //     avatar: '🏎',
+    //     color: '#e2f3e4',
+    //     x: GameBoardSize-1,
+    //     y: GameBoardSize-1
+    // },
+    // {
+    //     avatar: '🍜',
+    //     color: '#94e344',
+    //     x: 0,
+    //     y: GameBoardSize-1
+    // }
 ]
 
 const INITIAL_GAME_STATE = {
-    countdown: 15,
+    countdown: 5,
     players: PLAYER_CONSTANTS.map((constants, index) => {
         return {
             ...constants,
@@ -118,19 +118,19 @@ io.on('connection', (socket) => {
         io.emit("game_ready", true)
     }
 
-    socket.on('ready_up', () => {
+    socket.on('ready_up', (playerIsReady) => {
         // finds player that click the ready button and sets their ready status to true, will run each button press
         const playerThatsReady = gameState.players.find(player => player.id === socket.id)
-        if(playerThatsReady === undefined){
+        if (playerThatsReady === undefined){
             console.log("spectators cannot press ready")
             socket.emit('room_is_full_alert', true )
         }else {
-        console.log('Player', playerThatsReady.id, 'is ready')
-        playerThatsReady.ready = true
+            console.log('Player', playerThatsReady.id, 'is ready', playerIsReady)
+            playerThatsReady.ready = playerIsReady
+            socket.emit('ready_status_received', playerIsReady)
         }
 
         // SHOULD ONLY RUN ONCE
-        console.log(gameState.countdown)
         if(gameState.players.every(player => player.ready)) {
             io.emit('start_game', true)
 
