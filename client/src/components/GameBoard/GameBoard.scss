@@ -15,6 +15,7 @@
     width: $gameBoardSize;
     height: $gameBoardSize;
     display: inline-block;
+    outline: 1px solid black;
 }
 
 .cell--inactive{

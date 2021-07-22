@@ -16,3 +16,13 @@
         font-size: 3rem;
     }
 }
+
+.ready{
+    &__status-true{
+        color: green;
+    }
+
+    &__status-false{
+        color: red;
+    }
+}

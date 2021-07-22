@@ -7,34 +7,49 @@ function Start({socket, gameState, isPlayer}) {
     const [isGameReady, setGameReady] = useState(false)
     const [isPlayerReady, setPlayerReady] = useState(false)
     const [disableReadyButton, setDisableReadyButton] = useState(false)
+    const [players, setPlayers] = useState([])
     // const [gameIsFullAlert, setGameIsFullAlert] = useState (false)
 
     const onClickReady = (e) => {
         e.preventDefault()
         socket.emit('ready_up', true)  
-        // setPlayerReady(!isPlayerReady)
+        setPlayerReady(true)
         // socket.emit('ready_up', !isPlayerReady)  
     }
 
-    // socket.on('ready_status_received', isPlayerReady)
-    socket.on('slots_filled', () => setGameReady(true))
-    socket.on('start_game', () => {
-        // show game
-        history.push('/game')
-        setDisableReadyButton(true)
-    })
-
     useEffect(() => {
-        socket.on('room_is_full_alert', () => alert("Game is full! Joining as spectator!"), console.log("room full"))
+        // TODO - remove listeners and re-add
+        socket.on('player_statuses', players => setPlayers(players))
+
+        socket.on('slots_filled', () => setGameReady(true))
+        socket.on('start_game', () => {
+            // show game
+            history.push('/game')
+            setDisableReadyButton(true)
+        })
+        // socket.on('room_is_full_alert', () => alert("Game is full! Joining as spectator!"), console.log("room full"))
     }, [])
 
-    // const displayReadyStatus = (gameState.players || []).map((player, index) =>{
-    //     if(player.ready === true){
-    //     return <p className="ready__status-true">{player.avatar}Ready</p>
-    //     } else{
-    //         return <p className="ready__status-false">{player.avatar}Not Ready</p>
-    //     }
-    // })
+    const playerReadyStatuses = players.map((player, index) =>{
+        if(player.ready === true){
+            if(player.id === socket.id) {
+                return <p className="ready__status-true">{'-> ' + player.avatar}Ready</p>
+            } else {
+                return <p className="ready__status-true">{player.avatar}Ready</p>
+            }
+        } else{
+            return <p className="ready__status-false">{player.avatar}Not Ready</p>
+        }
+    })
+
+    const allPlayersReady = players.every(player => player.ready === true)
+
+    let readyStateMessage = 'Click ready button'
+    if (isPlayerReady && allPlayersReady) {
+        readyStateMessage = 'Starting game...'
+    } else if (isPlayerReady && !allPlayersReady) {
+        readyStateMessage = 'Waiting for other players...'
+    }
 
     return (
         <div className="nes-container with-title is-centered is-dark is-rounded start">
@@ -45,8 +60,8 @@ function Start({socket, gameState, isPlayer}) {
                         ? 
                         (
                             <div>
-                                <p>Ready to play</p>
-                                {/* <p>{displayReadyStatus}</p> */}
+                                <p>{readyStateMessage}</p>
+                                { isPlayerReady ? (<p>{playerReadyStatuses}</p>) : null }
                                 <form className="start__form">
                                     <button className="nes-btn is-primary"
                                     // disabled={disableReadyButton? true: false}

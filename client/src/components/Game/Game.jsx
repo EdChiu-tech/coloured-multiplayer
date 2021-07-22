@@ -20,10 +20,12 @@ function Game({ socket, gameState }) {
             <GameBoard gameState={gameState} socket={socket} />
             {gameState.players ? (
                 <div className="score">
-                    <p>{`${gameState.players[0].avatar}${gameState.players[0].tileCount}`}</p>
-                    <p>{`${gameState.players[1].avatar}${gameState.players[1].tileCount}`}</p>
-                    {/* <p>{`${gameState.players[2].avatar}${gameState.players[2].tileCount}`}</p>
-                    <p>{`${gameState.players[3].avatar}${gameState.players[3].tileCount}`}</p> */}
+                    {
+                        gameState.players.map(player => {
+                            const { avatar, tileCount } = player
+                            return (<p>{`${avatar}${tileCount}`}</p>)
+                        })
+                    }
                 </div>
             ) : null}
         </>

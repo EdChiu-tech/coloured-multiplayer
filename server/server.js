@@ -19,6 +19,13 @@ const io = new Server(server, {
 app.use(cors({ origin: '*' }))
 app.use(express.static("public"))
 
+
+// Manually disconnect players
+app.get('/disconnect', (req, res) => {
+    io.disconnectSockets();
+    res.sendStatus(200)
+})
+
 const GameBoardSize = 20;
 
 const PLAYER_CONSTANTS = [
@@ -34,22 +41,22 @@ const PLAYER_CONSTANTS = [
         x: GameBoardSize - 1,
         y: 0
     },
-    // {
-    //     avatar: '🏎',
-    //     color: '#e2f3e4',
-    //     x: GameBoardSize-1,
-    //     y: GameBoardSize-1
-    // },
-    // {
-    //     avatar: '🍜',
-    //     color: '#94e344',
-    //     x: 0,
-    //     y: GameBoardSize-1
-    // }
+    {
+        avatar: '🐘',
+        color: '#e2f3e4',
+        x: GameBoardSize-1,
+        y: GameBoardSize-1
+    },
+    {
+        avatar: '🍜',
+        color: '#94e344',
+        x: 0,
+        y: GameBoardSize-1
+    }
 ]
 
 const INITIAL_GAME_STATE = {
-    countdown: 15,
+    countdown: 30,
     players: PLAYER_CONSTANTS.map((constants, index) => {
         return {
             ...constants,
@@ -60,22 +67,24 @@ const INITIAL_GAME_STATE = {
             tileCount: 0,
         }
     }),
-    spectators: [],
     matrix: Array(GameBoardSize).fill().map(() => Array(GameBoardSize).fill({}))
 }
+
+const TRANSITION_DELAY = 3000
 
 // clone of the initial game state to not modify original
 let gameState = cloneDeep(INITIAL_GAME_STATE)
 
 function updateMatrix(playerThatMoved) {
+    if(playerThatMoved === undefined) return
     const { x, y, color, index } = playerThatMoved
     const cell = gameState.matrix[y][x] // default value is {}, y and x for playThatMoved
 
     if (cell.playerIndex === undefined) { //checks if cell is empty object, if so, returns true
-        // if no one has walked over it
+        // if no one has walked over cell
         gameState.players[index].tileCount++
     } else if (cell.playerIndex !== index) {
-        // stepped over someones existing tile
+        // stepped over someone's existing cell
         gameState.players[index].tileCount++
         gameState.players[cell.playerIndex].tileCount--
     }
@@ -86,7 +95,7 @@ function updateMatrix(playerThatMoved) {
 
 function setPlayerJoined(socketId) {
     console.log('Set player', socketId, 's joined status to true\n\n')
-    //find empty player slot and occupy slot
+    // find empty player slot and occupy slot
     const index = gameState.players.findIndex(player => player.joined === false)
     gameState.players[index].joined = true
     gameState.players[index].id = socketId
@@ -105,11 +114,6 @@ function setPlayerLeft(socketId) {
     }
 }
 
-function addSpectator(socketId) {
-    gameState.spectators.push(socketId)
-}
-
-io.disconnectSockets();
 io.on('connection', (socket) => {
     console.log('A new user has connected:', socket.id);
 
@@ -119,7 +123,6 @@ io.on('connection', (socket) => {
         setPlayerJoined(socket.id)
         socket.emit('is_player_status', true)
     } else {
-        addSpectator(socket.id)
         socket.emit('is_player_status', false)
     }
 
@@ -131,13 +134,10 @@ io.on('connection', (socket) => {
     // finds player that clicked the ready button and sets their ready status to true, will run each button press
     socket.on('ready_up', (isReady) => {
         const player = gameState.players.find(player => player.id === socket.id)
-        // const spectator = gameState.spectators.find(socketId => socketId === socket.id)
-
-        // if (spectator) {
-        //     console.log("spectators cannot press ready")
-        //     socket.emit('room_is_full_alert', true)
-        // } else 
         if (player) {
+            // Ignore players that already pressed ready (or just disable the button on frontend)
+            if (player.ready === true) return
+
             console.log('Player', player.id, 'set their ready status to', isReady)
             player.ready = true // isReady
             // socket.emit('ready_status_received', isReady)
@@ -145,26 +145,30 @@ io.on('connection', (socket) => {
             throw new Error('User is neither player or spectator (should never happen)')
         }
 
+        io.emit('player_statuses', gameState.players)
+
         // SHOULD ONLY RUN ONCE
         if(gameState.players.every(player => player.ready)) {
-            io.emit('start_game', true)
+            setTimeout(() => {
+                io.emit('start_game', true)
 
-            // Begin countdown
-            io.emit('sync_game_state', gameState)
-            interval = setInterval(() => {
-                if (gameState.countdown < 0) {
-                    throw new Error('THIS SHOULD NEVER HAPPEN, SOMETHING IS WRONG WITH MY CODE!')
-                }
-
-                gameState.countdown--
+                // Begin countdown
                 io.emit('sync_game_state', gameState)
-                if (gameState.countdown === 0) {
-                    clearInterval(interval)
-                    io.disconnectSockets();
+                interval = setInterval(() => {
+                    if (gameState.countdown < 0) {
+                        throw new Error('THIS SHOULD NEVER HAPPEN, SOMETHING IS WRONG WITH MY CODE!')
+                    }
 
-                    gameState = cloneDeep(INITIAL_GAME_STATE)
-                }
-            }, 1000)
+                    gameState.countdown--
+                    io.emit('sync_game_state', gameState)
+                    if (gameState.countdown === 0) {
+                        clearInterval(interval)
+                        io.disconnectSockets();
+
+                        gameState = cloneDeep(INITIAL_GAME_STATE)
+                    }
+                }, 1000)
+            }, TRANSITION_DELAY)
         }
     })
 
@@ -198,5 +202,5 @@ io.on('connection', (socket) => {
 });
 
 server.listen(port, () => {
-    console.log(`server is running on :${port}`);
+    console.log(`websocket server is running on :${port}`);
 });
