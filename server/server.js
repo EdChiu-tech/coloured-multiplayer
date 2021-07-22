@@ -49,7 +49,7 @@ const PLAYER_CONSTANTS = [
 ]
 
 const INITIAL_GAME_STATE = {
-    countdown: 5,
+    countdown: 15,
     players: PLAYER_CONSTANTS.map((constants, index) => {
         return {
             ...constants,
@@ -57,9 +57,10 @@ const INITIAL_GAME_STATE = {
             id: null,
             joined: false,
             ready: false,
-            tileCount: 0
+            tileCount: 0,
         }
     }),
+    spectators: [],
     matrix: Array(GameBoardSize).fill().map(() => Array(GameBoardSize).fill({}))
 }
 
@@ -87,11 +88,9 @@ function setPlayerJoined(socketId) {
     console.log('Set player', socketId, 's joined status to true\n\n')
     //find empty player slot and occupy slot
     const index = gameState.players.findIndex(player => player.joined === false)
-    if(index >= 0) { // if there is still free slot
-        gameState.players[index].joined = true
-        gameState.players[index].id = socketId
-        updateMatrix(gameState.players[index])
-    } 
+    gameState.players[index].joined = true
+    gameState.players[index].id = socketId
+    updateMatrix(gameState.players[index])
 }
 
 function setPlayerLeft(socketId) {
@@ -106,28 +105,44 @@ function setPlayerLeft(socketId) {
     }
 }
 
+function addSpectator(socketId) {
+    gameState.spectators.push(socketId)
+}
+
 io.disconnectSockets();
 io.on('connection', (socket) => {
     console.log('A new user has connected:', socket.id);
 
     // PLAYER JOINING CODE 
-    setPlayerJoined(socket.id)
+    const hasFreeSlot = gameState.players.find(player => player.joined === false)
+    if (hasFreeSlot) {
+        setPlayerJoined(socket.id)
+        socket.emit('is_player_status', true)
+    } else {
+        addSpectator(socket.id)
+        socket.emit('is_player_status', false)
+    }
 
     // once all player slots are filled, game is ready 
     if (gameState.players.every(player => player.joined === true)) {
-        io.emit("game_ready", true)
+        io.emit("slots_filled", true)
     }
 
-    socket.on('ready_up', (playerIsReady) => {
-        // finds player that click the ready button and sets their ready status to true, will run each button press
-        const playerThatsReady = gameState.players.find(player => player.id === socket.id)
-        if (playerThatsReady === undefined){
-            console.log("spectators cannot press ready")
-            socket.emit('room_is_full_alert', true )
-        }else {
-            console.log('Player', playerThatsReady.id, 'is ready', playerIsReady)
-            playerThatsReady.ready = playerIsReady
-            socket.emit('ready_status_received', playerIsReady)
+    // finds player that clicked the ready button and sets their ready status to true, will run each button press
+    socket.on('ready_up', (isReady) => {
+        const player = gameState.players.find(player => player.id === socket.id)
+        // const spectator = gameState.spectators.find(socketId => socketId === socket.id)
+
+        // if (spectator) {
+        //     console.log("spectators cannot press ready")
+        //     socket.emit('room_is_full_alert', true)
+        // } else 
+        if (player) {
+            console.log('Player', player.id, 'set their ready status to', isReady)
+            player.ready = true // isReady
+            // socket.emit('ready_status_received', isReady)
+        } else {
+            throw new Error('User is neither player or spectator (should never happen)')
         }
 
         // SHOULD ONLY RUN ONCE
@@ -137,11 +152,17 @@ io.on('connection', (socket) => {
             // Begin countdown
             io.emit('sync_game_state', gameState)
             interval = setInterval(() => {
+                if (gameState.countdown < 0) {
+                    throw new Error('THIS SHOULD NEVER HAPPEN, SOMETHING IS WRONG WITH MY CODE!')
+                }
+
                 gameState.countdown--
                 io.emit('sync_game_state', gameState)
                 if (gameState.countdown === 0) {
                     clearInterval(interval)
                     io.disconnectSockets();
+
+                    gameState = cloneDeep(INITIAL_GAME_STATE)
                 }
             }, 1000)
         }
@@ -150,15 +171,17 @@ io.on('connection', (socket) => {
     socket.on('move', msg => {
         console.log('Received move message from:', socket.id, msg)
         const playerThatMoved = gameState.players.find(player => player.id === socket.id)
-        if (!playerThatMoved) return // if spectator, ignore
-        if (msg === "ArrowUp") {
-            if (playerThatMoved.y > 0) playerThatMoved.y--
-        } else if (msg === "ArrowDown") {
-            if (playerThatMoved.y < GameBoardSize - 1) playerThatMoved.y++
-        } else if (msg === "ArrowRight") {
-            if (playerThatMoved.x < GameBoardSize - 1) playerThatMoved.x++
-        } else if (msg === "ArrowLeft") {
-            if (playerThatMoved.x > 0) playerThatMoved.x--
+        
+        if (playerThatMoved) {
+            if (msg === "ArrowUp") {
+                if (playerThatMoved.y > 0) playerThatMoved.y--
+            } else if (msg === "ArrowDown") {
+                if (playerThatMoved.y < GameBoardSize - 1) playerThatMoved.y++
+            } else if (msg === "ArrowRight") {
+                if (playerThatMoved.x < GameBoardSize - 1) playerThatMoved.x++
+            } else if (msg === "ArrowLeft") {
+                if (playerThatMoved.x > 0) playerThatMoved.x--
+            }
         }
 
         updateMatrix(playerThatMoved)

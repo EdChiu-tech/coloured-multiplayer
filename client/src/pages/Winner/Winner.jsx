@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom"
 import "./Winner.scss"
 
 
-function Winner({children, socket, onShow}) {
+function Winner({children, socket, onShow, isPlayer}) {
     const history = useHistory();
 
 
@@ -18,7 +18,7 @@ function Winner({children, socket, onShow}) {
         <div className="winner">
             <div className="winner__content-container nes-container is-round is-dark">
             <h1 className="winner__content">{children}</h1>
-            <button className="winner__reset nes-btn is-primary" type="click" onClick={goBack}>Restart?</button>
+            <button className="winner__reset nes-btn is-primary" type="click" onClick={goBack}>{isPlayer ? 'Restart?' : 'Go Back'}</button>
             </div>
         </div>
     )
