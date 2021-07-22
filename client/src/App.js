@@ -7,9 +7,9 @@ import BGVideo from "./components/BGVideo/BGVideo"
 import Winner from "./pages/Winner/Winner"
 import './App.scss';
 
-const socket = io('ws://localhost:8080')
+// const socket = io('ws://localhost:8080')
 socket.on('connected', () => console.log('CONNECTED!'))
-// const socket = io('wss://morning-beach-77565.herokuapp.com/')
+const socket = io('wss://morning-beach-77565.herokuapp.com/')
 
 
 function App() {
