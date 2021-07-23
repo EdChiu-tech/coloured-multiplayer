@@ -26,7 +26,7 @@ app.get('/disconnect', (req, res) => {
     res.sendStatus(200)
 })
 
-const GameBoardSize = 20;
+const GameBoardSize = 15;
 
 const PLAYER_CONSTANTS = [
     {
