@@ -149,6 +149,7 @@ io.on('connection', (socket) => {
 
         // SHOULD ONLY RUN ONCE
         if(gameState.players.every(player => player.ready)) {
+            io.emit('game_start_timer', true)
             setTimeout(() => {
                 io.emit('start_game', true)
 

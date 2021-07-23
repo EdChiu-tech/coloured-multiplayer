@@ -20,13 +20,13 @@ const GameBoard = ({ gameState, socket }) => {
                     if (y === rowIndex && x === colIndex) {
                         // current position of player
                         return <div
-                            key={colIndex} className="cell--online-player" style={{ 'backgroundColor': color }}>{avatar}</div>
+                            key={colIndex} className="cell--online-player" style={{ 'backgroundColor': color}}>{avatar}</div>
                     }
                     // cells that the player has "converted"
                     else {
                         return <div
                             key={colIndex}
-                            className="cell--online-player" style={{ 'backgroundColor': color }}></div>
+                            className="cell--player-moved" style={{ 'backgroundColor': color }}></div>
                     }
                 })}
             </div>

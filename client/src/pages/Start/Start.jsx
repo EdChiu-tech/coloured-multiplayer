@@ -5,6 +5,7 @@ import "./Start.scss"
 function Start({socket, gameState, isPlayer}) {
     let history = useHistory();
     const [isGameReady, setGameReady] = useState(false)
+    const [gameReadyTimer, setGameReadyTimer] = useState(false)
     const [isPlayerReady, setPlayerReady] = useState(false)
     const [disableReadyButton, setDisableReadyButton] = useState(false)
     const [players, setPlayers] = useState([])
@@ -17,8 +18,13 @@ function Start({socket, gameState, isPlayer}) {
         // socket.emit('ready_up', !isPlayerReady)  
     }
 
+    // const gameStartCountdown = (countdown) => {
+    //     let 
+    // }
+
     useEffect(() => {
         // TODO - remove listeners and re-add
+        socket.on('game_start_timer', () => setGameReadyTimer(true))
         socket.on('player_statuses', players => setPlayers(players))
 
         socket.on('slots_filled', () => setGameReady(true))

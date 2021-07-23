@@ -12,6 +12,15 @@
 }
 
 .cell--online-player{
+    position: relative;
+    top:-10px;
+    width: $gameBoardSize;
+    height: $gameBoardSize;
+    display: inline-block;
+    outline: 1px solid black;
+}
+
+.cell--player-moved{
     width: $gameBoardSize;
     height: $gameBoardSize;
     display: inline-block;
