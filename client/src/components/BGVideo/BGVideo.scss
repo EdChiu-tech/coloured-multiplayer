@@ -1,3 +1,7 @@
+@use "../../partials/colors" as *;
+@use "../../partials/mixins" as *;
+@use "../../partials/typography" as *;
+
 .background-video{
     object-fit: cover;
     width: 100vw;
@@ -9,5 +13,5 @@
 
 .background-video__container{
     position: relative;
-    z-index: -10;
+    z-index: -25;
 }

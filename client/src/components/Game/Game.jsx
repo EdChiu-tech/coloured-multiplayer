@@ -23,7 +23,7 @@ function Game({ socket, gameState }) {
                     {
                         gameState.players.map(player => {
                             const { avatar, tileCount } = player
-                            return (<p>{`${avatar}${tileCount}`}</p>)
+                            return (<p>{`${avatar} ${tileCount}`}</p>)
                         })
                     }
                 </div>

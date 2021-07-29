@@ -3,6 +3,8 @@
 
 
 .gameBoard{
+    position: relative;
+    z-index: 5;
     width: 100%;
     height: auto;
 }
@@ -32,7 +34,7 @@
     height: $gameBoardSize;
     outline: 1px solid black;
     display: inline-block;
-    background-color: gray;
+    background-color: #7BB542;
 }
 
 .cell--active{

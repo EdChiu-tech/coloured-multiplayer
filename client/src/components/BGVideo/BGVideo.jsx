@@ -1,5 +1,5 @@
 import React from 'react'
-import BGV from "../../assets/videos/retro_game_screen.mp4"
+import BGV from "../../assets/videos/space.mp4"
 import "./BGVideo.scss"
 
 const BGVideo = () => {

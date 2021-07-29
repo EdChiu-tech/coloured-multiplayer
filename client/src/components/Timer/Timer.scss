@@ -4,7 +4,9 @@
 .timer__text{
     @include flex;
     @include flex-center;
+    color: #730F4E;
     margin: 0;
     font-size: 35px; 
     text-align: center;
+    z-index: 5;
 }

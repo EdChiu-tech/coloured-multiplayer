@@ -17,3 +17,49 @@
   text-align: center;
 }
 
+.gb__outer{
+  @include flex;
+  @include flex-center;
+  flex-direction: column;
+  position: relative;
+  width: 50vw;
+  height: 86vh;
+  background-color:#878792;
+  border-radius: 2% 2% 15% 2%;
+  z-index: 0;
+}
+
+.gb__inner{
+  @include flex;
+  @include flex-center;
+  flex-direction: column;
+  position: relative;
+  width: 45vw;
+  height: 80vh;
+  background-color: #081820;
+  border-radius: 0 0 15% 0;
+  z-index: 1;
+}
+
+.dot{
+  animation: blink 1s infinite;
+  position: absolute;
+  top: 20%;
+  left: 2%;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+@keyframes blink{
+  0% {
+    background-color: rgb(255,0,0,1);
+  }
+  50% {
+    background-color: rgba(255,0,0,0.3)
+  }
+  100% {
+    background-color: rgb(255,0,0,1);
+  }
+}

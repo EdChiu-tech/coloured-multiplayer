@@ -23,7 +23,7 @@ app.use(express.static("public"))
 // Manually disconnect players
 app.get('/disconnect', (req, res) => {
     io.disconnectSockets();
-    res.sendStatus(200)
+    res.status(200, "players disconnected")
 })
 
 const GameBoardSize = 15;
@@ -31,25 +31,25 @@ const GameBoardSize = 15;
 const PLAYER_CONSTANTS = [
     {
         avatar: '🐶',
-        color: '#46878f',
+        color: '#D0F4F8',
         x: 0,
         y: 0
     },
     {
         avatar: '🐱',
-        color: '#332c50',
+        color: '#70B0C0',
         x: GameBoardSize - 1,
         y: 0
     },
     {
         avatar: '🐘',
-        color: '#e2f3e4',
+        color: '#3C3468',
         x: GameBoardSize-1,
         y: GameBoardSize-1
     },
     {
         avatar: '🍜',
-        color: '#94e344',
+        color: '#1C0820',
         x: 0,
         y: GameBoardSize-1
     }
@@ -75,7 +75,7 @@ const TRANSITION_DELAY = 3000
 // clone of the initial game state to not modify original
 let gameState = cloneDeep(INITIAL_GAME_STATE)
 
-function updateMatrix(playerThatMoved) {
+const updateMatrix = (playerThatMoved) => {
     if(playerThatMoved === undefined) return
     const { x, y, color, index } = playerThatMoved
     const cell = gameState.matrix[y][x] // default value is {}, y and x for playThatMoved
@@ -93,7 +93,7 @@ function updateMatrix(playerThatMoved) {
     gameState.matrix[y][x] = { playerIndex: index, color }
 }
 
-function setPlayerJoined(socketId) {
+const setPlayerJoined = (socketId) => {
     console.log('Set player', socketId, 's joined status to true\n\n')
     // find empty player slot and occupy slot
     const index = gameState.players.findIndex(player => player.joined === false)
@@ -102,7 +102,7 @@ function setPlayerJoined(socketId) {
     updateMatrix(gameState.players[index])
 }
 
-function setPlayerLeft(socketId) {
+const setPlayerLeft = (socketId) => {
     // find index of player that has an id in slot
     const index = gameState.players.findIndex(player => player.id === socketId)
     if(index >= 0) {
