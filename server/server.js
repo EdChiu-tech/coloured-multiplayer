@@ -23,7 +23,8 @@ app.use(express.static("public"))
 // Manually disconnect players
 app.get('/disconnect', (req, res) => {
     io.disconnectSockets();
-    res.status(200, "players disconnected")
+    res.status(200).send("players disconnected manually")
+    // res.sendStatus(200)
 })
 
 const GameBoardSize = 15;
